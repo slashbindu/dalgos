@@ -12,9 +12,6 @@
 
 
 #define MAX_KEY_CHARS 9
-
-
-
 char * alphabet_map[] = {	"0",	//0
 				"1",	//1
 				"ABC",	//2
@@ -37,7 +34,6 @@ print_combo(char* psnumber, int curdigit, char * output_buf, int o_ind){
 		printf("%s\t", output_buf);
 		return;
 	}
-
 	if(psnumber[curdigit] != '\0'){
 		int curnum = psnumber[curdigit] - '0';
 		int nchars = strlen(alphabet_map[curnum]);
@@ -52,7 +48,6 @@ print_combo(char* psnumber, int curdigit, char * output_buf, int o_ind){
 
 void
 print_all_combos(char  *numstr){
-
 
 	int curdigit = 0;
 	char  output_buf[MAX_KEY_CHARS];
