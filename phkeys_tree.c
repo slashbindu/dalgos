@@ -11,7 +11,7 @@
 
 
 
-#define MAX_KEY_CHARS 9
+#define MAX_KEY_LEN 9
 char * alphabet_map[] = {	"0",	//0
 				"1",	//1
 				"ABC",	//2
@@ -50,8 +50,8 @@ void
 print_all_combos(char  *numstr){
 
 	int curdigit = 0;
-	char  output_buf[MAX_KEY_CHARS];
-	memset(output_buf, 0, MAX_KEY_CHARS);
+	char  output_buf[MAX_KEY_LEN];
+	memset(output_buf, 0, MAX_KEY_LEN);
 	int out_ind = 0;
 	print_combo(numstr, curdigit, output_buf,  out_ind );
 }
