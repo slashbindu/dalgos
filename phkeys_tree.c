@@ -40,7 +40,7 @@ print_combo(char* psnumber, int curdigit, char * output_buf, int o_ind){
 		char *pcharr = alphabet_map[curnum];
 		int i;
 		for(i = 0; i < nchars; i++){
-			output_buf[o_ind] = pcharr[l];
+			output_buf[o_ind] = pcharr[i];
 			print_combo(psnumber, curdigit+1, output_buf, o_ind+1);
 		}
 	}
