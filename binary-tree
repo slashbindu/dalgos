@@ -1,0 +1,138 @@
+#include <iostream>
+#include <memory>
+#include <list>
+#include <deque>
+#include <stack>
+using namespace std;
+
+
+//Input: root = [1,2,3,null,null,4,5]
+//Output: [1,2,3,null,null,4,5]
+
+typedef struct node {
+    int val;
+    struct node *left;
+    struct node *right;
+} s_node;
+
+class BTSolution {
+    
+    public:
+    
+    //DFS - InOrder PreOrder PostOrder 
+    
+    //process left subtree, visit root, process right  subtree
+    void InorderTraversal(node * root) {
+        if(root) {
+            InorderTraversal(root->left);
+            cout << "   : " << root->val;
+            InorderTraversal(root->right);
+        }
+    }
+    
+     void InorderTraversalnr(node * root) {
+          stack<node *> inorder_stk;
+          node * curr = root;
+           cout << "\nInorder nonrecursive: \n";
+          while((curr != NULL) || (!inorder_stk.empty() )) {
+              
+              while(curr != NULL) {
+               inorder_stk.push(curr);
+               curr = curr->left;
+              }
+          
+              curr = inorder_stk.top();
+              if (curr) {
+                cout << "   : " << curr->val;
+                inorder_stk.pop();
+                curr = curr->right;
+              }
+           }
+          
+     }
+    
+    void PreorderTraversal(struct node * root) {
+        
+          cout <<  "\n PreOrder: \n";
+   
+        if(root) {
+            cout << "   " << root->val;
+            PreorderTraversal(root->left);
+            PreorderTraversal(root->right);
+            
+        }
+    }
+    
+    //process left subtree,  process right  subtree then visit root 
+  
+    void PostorderTraversal(node * root){
+        cout << "Postorder: ";
+        if(root) {
+            
+            PostorderTraversal(root->left);
+            PostorderTraversal(root->right);
+            cout << " " << root->val;
+        }
+    }
+    
+    int GetHeightOfNode(node * root){
+        
+        if(root) {
+            
+            int lheight =  GetHeightOfNode(root->left);
+            int rheight =  GetHeightOfNode(root->right);
+            return ( max(lheight, rheight)+1 );
+        } else {
+            return 0;
+        }
+    }
+    
+    // BFS traversal 
+    void print_level_order( node * root) {
+        
+        deque<node*> lvl_queu;
+        if(root) {
+            lvl_queu.push_back(root);
+        }
+        
+        while(lvl_queu.size()) {
+            
+            node * tmp_node = lvl_queu.front();
+            cout << "  \t" << tmp_node->val;
+            lvl_queu.pop_front();
+            if (tmp_node->left) {
+                lvl_queu.push_back(tmp_node->left);
+            }
+            
+            if (tmp_node->right) {
+                lvl_queu.push_back(tmp_node->right);
+            }
+        }
+    }
+
+};
+
+
+
+int main()
+{
+     node* root = new node; root->val =1;
+    root->left = new node; root->left->val = 2;
+    root->right = new node; root->right->val = 3;
+    root->left->left = new node; root->left->left->val = 4;
+    root->left->right = new node;root->left->right->val = 5;
+    BTSolution bts;
+    int ht = bts.GetHeightOfNode(root);
+    cout << "\n BinaryTRee of depth " <<  ht << endl;
+     cout << "\n level order: \n";
+    bts.print_level_order(root);
+   
+    cout << "\nInorder: \n";
+    bts.InorderTraversal(root);
+    bts.InorderTraversalnr(root);
+     //bts.PreorderTraversal(root);
+     
+      //bts.PostorderTraversal(root);
+
+    return 0;
+}
