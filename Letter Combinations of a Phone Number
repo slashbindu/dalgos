@@ -1,0 +1,88 @@
+/*
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+Example 1:
+
+Input: digits = "23"
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+
+*/
+using namespace std;
+
+
+typedef std::map<char, vector<string>> map_t;
+
+class Solution {
+public:
+    
+    map_t combimap;
+
+    void build_combimap(){
+        
+        vector<string> tmp = {"a", "b", "c"};
+        combimap.insert(pair<int, vector<string>>('2',tmp));
+        
+        tmp.clear();
+        tmp = {"d", "e", "f"};
+        combimap.insert( pair<int, vector<string>>('3',tmp));
+        
+        tmp.clear();
+        tmp = {"g", "h", "i"};
+        combimap.insert( pair<int, vector<string>>('4', tmp));
+                        
+        tmp.clear();
+        tmp = {"j", "k", "l"};
+        combimap.insert( pair<int, vector<string>>('5',tmp));
+
+        tmp.clear();
+        tmp = {"m", "n", "o"};
+        combimap.insert(pair<int, vector<string>>('6', tmp));
+                        
+        tmp.clear();
+        tmp = {"p", "q","r", "s"};
+        combimap.insert( pair<int, vector<string>>('7', tmp));
+                        
+        tmp.clear();
+        tmp = {"t", "u", "v"};
+        combimap.insert( pair<int, vector<string>>('8', tmp));
+                        
+        tmp.clear();
+        tmp =  {"w","x","y","z"};
+        combimap.insert( pair<int, vector<string>>('9',tmp));
+    }
+                        
+                        
+    vector<string> 
+    buildcombos(vector<string> prevcomb, vector<string> currcomb){
+        
+          vector<string> result;
+          for (int j = 0; j < prevcomb.size(); j++ ) {
+                 for (int i =0; i < currcomb.size(); i++) {
+                        result.push_back( prevcomb[j] + currcomb[i] );
+                 }
+           }
+           return result;
+        
+    }
+                                              
+                                                
+    vector<string> letterCombinations(string digits) {
+        
+        
+        build_combimap();
+               
+        vector<string> results;
+       
+        results =  combimap[digits[0]];
+        for (int i = 1; i < digits.length(); ++i) {
+            
+            vector<string> currcomb = combimap[digits[i]];
+            results = buildcombos(results, currcomb);
+        }
+        return results;
+            
+    }
+
+};
