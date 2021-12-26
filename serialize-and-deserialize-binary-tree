@@ -1,0 +1,146 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ 
+ Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, 
+ or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+
+Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. 
+You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.
+
+         1
+        / \
+        2  3
+            /\
+            4 5
+ 
+ Input: root = [1,2,3,null,null,4,5]
+Output: [1,2,3,null,null,4,5]
+
+ */
+using namespace std;
+
+ struct TreeNode {
+      int val;
+      TreeNode *left;
+      TreeNode *right;
+      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
+class Codec {
+public:
+      
+    // Encodes a tree to a single string.
+    string serialize(TreeNode *root) {
+        
+         string m_srz;
+         queue<struct TreeNode*> m_bfs;
+          
+        // traverse level order and append the val into a string
+        struct TreeNode *curr = NULL;
+     
+        if(root) {
+            m_bfs.push(root);
+        }
+        
+        while(!m_bfs.empty() ){
+            
+            curr = m_bfs.front();
+                     
+            if (curr == nullptr) {
+               m_srz += "NULL,";
+            } else {
+               m_bfs.push(m_bfs.front()->left);
+               m_bfs.push(m_bfs.front()->right);
+               m_srz += to_string(curr->val);
+               m_srz +=  ",";
+               
+            }
+            m_bfs.pop();
+            
+        }
+              
+        return m_srz;
+    }  
+    
+   // parse the string and build vector<int> of values
+   int get_tokens(string data , vector<int> & tokens){
+        
+        int size = data.size();
+        if(!size)
+            return 0;
+        
+        string stoken;
+        int i = 0;
+        while( i < size) {
+            
+            stoken = "";
+            while( data[i] != ','){
+                stoken +=  data[i++];
+            }
+            i++;
+                     
+            if(stoken == "NULL") {
+                tokens.push_back(0);
+            } else {
+                tokens.push_back(stoi(stoken));
+            }
+        }
+        return tokens.size();
+    }
+    
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        
+        vector<int> tokens = {0};
+        int ntoks = get_tokens(data, tokens);
+        TreeNode *node, *root, *left, *right;
+        
+        //assert(ntoks == tokens.size());
+        //set up root node
+        queue<TreeNode*> lvlq;
+        if(tokens[0]) {
+            root = new TreeNode(tokens[0]);
+            lvlq.push(root);
+        }   
+    
+        int i =0;             
+        while ( (i < ntoks-1) && (!lvlq.empty()) ) {
+
+            node = lvlq.front();
+            if(node) {
+                
+                if(tokens[2*i+1] != 0) {
+                    node->left = new TreeNode(tokens[2*i+1]);
+                    lvlq.push(node->left);
+                } else {
+                     node->left = NULL;
+                }
+
+                if (tokens[2*i+2] != 0) {
+                    node->right = new TreeNode(tokens[2*i+2]);
+                    lvlq.push(node->right);
+               } else {
+                    node->right =  NULL;
+
+                }
+            }
+            lvlq.pop();
+            i++;
+            
+        }
+                  
+         return root;
+    }
+     
+        
+   
+};
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser, deser;
+// TreeNode* ans = deser.deserialize(ser.serialize(root));
