@@ -1,2 +1,2 @@
-Repository of problems solved.(Sharpen the saw!)
+Repository of problems solved.(sharpen the saw!)
 
