@@ -1,9 +1,3 @@
-# Examples/Probem solving etc 
-
- 	phkeys_tree.c:
-Print all combinations of strings for phone key pad
-ex:  2 (ABC), 3(DEF), 4(GHI)
-input : 234  
-output :
-ADG     ADH     ADI     AEG     AEH     AEI     AFG     AFH     AFI     BDG    BDH      BDI     BEG     BEH     BEI     BFG     BFH     BFI     CDG     CDH    CDI      CEG     CEH     CEI     CFG     CFH     CFI
-, 
+Repository of problems solved to sharpen the saw and kee it from getting dull.
+See License terms here:
+https://github.com/bms2016/interview_prep/blob/master/LICENSE
