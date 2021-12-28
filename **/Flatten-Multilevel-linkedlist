@@ -34,6 +34,7 @@ class Solution{
                     levelq.push_back(curr->next);
                 }
                 curr->next = curr->child;
+                curr->child->prev = curr;
                 curr->child = NULL;
                 
             } 
