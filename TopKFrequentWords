@@ -1,0 +1,53 @@
+/**
+Given an array of strings words and an integer k, return the k most frequent strings.
+
+Return the answer sorted by the frequency from highest to lowest. Sort the words with the same frequency by their lexicographical order.
+["i","love","linux","i","love","coding"]
+2
+["the","day","is","sunny","the","the","the","sunny","is","is"]
+4
+*/
+using namespace std;
+
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        
+        if (k == words.size()) {
+            return words;
+        }
+        
+        //map of word to its freq
+        map<string, int> mapword2freq;
+        for(auto i = 0; i < words.size(); i++) {
+             mapword2freq[words[i]] += 1;
+        }
+        
+        //comparator compares freq/cnt of words
+        auto mycomp = [&] (const pair<string, int>& a, const pair<string, int>&  b){ 
+            
+            // if word freq is same, sort lexically
+            return ( a.second > b.second ||
+                    (a.second == b.second && a.first < b.first));};
+        
+        //min heap of word cnt            
+        priority_queue<pair<string, int> ,vector<pair<string,int>>, decltype(mycomp) > pq(mycomp);
+         
+        for(pair<string, int> mitr  : mapword2freq) {
+            
+            pq.emplace(mitr.first, mitr.second);
+            if (pq.size()  > k){
+                // get rid of the least freq word to keep just top K words in PQ
+                pq.pop();
+            } 
+        }
+
+        vector<string> kwords;
+        while(!pq.empty()) {
+            kwords.insert(kwords.begin(), pq.top().first);
+            pq.pop();
+            
+         }
+         return kwords;
+    }
+};
