@@ -1,0 +1,76 @@
+/*
+Given an Given input string s, reverse the order of the words.
+
+A word is defined as a sequence of non-space characters. The words in s will be separated by at least one space.
+
+Return a string of the words in reverse order concatenated by a single space.
+
+Note that s may contain leading or trailing spaces or multiple spaces between two words. The returned string should only have a single space separating the words. 
+Do not include any extra spaces
+*/
+
+class Solution {
+public:
+    
+   void  reverseword(int begin, int end, string &input){
+        
+      char temp;
+      while(begin < end){
+          temp = input[begin];
+          input[begin++] = input[end];
+          input[end--] = temp;
+          
+      }
+    }
+    
+    string reverseWords(string s) {
+        
+        int len = s.size();
+        string result, input;
+        input = s;
+        int begin = 0;
+        int end = input.size()-1;
+                    
+        //reverse the entire string
+        reverseword(0, len-1, input);
+        
+        int n = 0; int wcnt = 0;
+        len = input.size()-1;
+        //build a result without extra spaces.
+        while(n <= len) {
+            
+           //skip all leading spaces
+           while((input[n] == (' ')) && (n <= len)){
+                    n++;
+           }
+            
+           if(wcnt && (n <= len) ) {
+                 result += " ";
+           }
+                
+           while(input[n] != (' ') && (n <= len)) {
+                   result += input[n++];   //copy the word
+           }
+           wcnt++;  
+        }
+        
+        len = result.size();
+        std::string::size_type ind;
+        n = begin = 0;
+        while(begin <= len-1) {
+              
+            // search from beginning of string
+            end = result.find(" ", begin);
+            //reverse the words
+            if (end < begin) {  // we reached the end 
+                reverseword(begin, len-1 , result);    
+                break;
+            } else {
+                reverseword(begin, end-1 , result);
+                begin = end+1;
+            }
+        }
+        return result;
+        
+    }
+};
