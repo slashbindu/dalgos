@@ -5,6 +5,9 @@
 #include <stack>
 using namespace std;
 
+/*
+Binary tree traversal
+*/
 
 //Input: root = [1,2,3,null,null,4,5]
 //Output: [1,2,3,null,null,4,5]
