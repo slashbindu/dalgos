@@ -1,0 +1,69 @@
+/*Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+ */
+ 
+ //Definition for a binary tree node.
+ struct TreeNode {
+      int val;
+      TreeNode *left;
+      TreeNode *right;
+      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+  };
+class Solution {
+    
+    
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        
+        vector<TreeNode *> path1;
+         vector<TreeNode *> path2;
+        
+        bool pfnd = findpath(root, p, path1);
+        bool qfnd = findpath(root,q, path2);
+        
+        //neither nodes was fnd so no ancestor
+        if ( !pfnd || !qfnd)
+            return NULL;
+        
+        int i =0;
+        for(; i < path1.size() && i < path2.size(); i++) {
+            
+            //just before the paths diverge is the common ancestor 
+            if (path1[i]->val != path2[i]->val)
+                break;
+         }
+         return path1[i-1];
+    }
+    
+    bool findpath(TreeNode* currnode, TreeNode* n,  vector<TreeNode*> &path){
+        
+        if (!currnode)
+            return false;
+        
+        path.push_back(currnode);
+        
+        if (currnode->val == n->val)
+            return true;
+        
+        bool l = false, r = false;
+        if(currnode->left) {
+         l = findpath(currnode->left, n,path);
+        }
+        
+        if(currnode->right) {
+            r = findpath(currnode->right, n,path);
+        }
+        
+        //fnd in neither subtree
+        if(l || r) {
+            
+            return true;
+        }
+        
+        //node is not fnd in either subtree
+        path.pop_back(); 
+        return false;
+       }
+};
