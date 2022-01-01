@@ -1,0 +1,71 @@
+
+/*
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+Implement the MinStack class:
+
+    MinStack() initializes the stack object.
+    void push(int val) pushes the element val onto the stack.
+    void pop() removes the element on the top of the stack.
+    int top() gets the top element of the stack.
+    int getMin() retrieves the minimum element in the stack.
+
+ 
+
+Example 1:
+
+Input
+["MinStack","push","push","push","getMin","pop","top","getMin"]
+[[],[-2],[0],[-3],[],[],[],[]]
+
+Output
+[null,null,null,null,-3,null,0,-2]
+
+*/
+class MinStack {
+    
+    vector<int> m_stk;
+    int m_currmin;
+      
+public:
+    
+    
+    MinStack() {
+          m_currmin  =  INT_MAX;
+       
+    }
+    
+    void push(int val) {
+        
+        if (val <=  m_currmin) {
+           m_stk.push_back(m_currmin); // push prev min
+           m_currmin = val;
+        }
+        m_stk.push_back(val);            
+    }
+    
+    void pop() {
+        
+        int top  = m_stk.back();
+        m_stk.pop_back();
+       if(m_currmin ==  top){
+           m_currmin =  m_stk.back();
+           m_stk.pop_back();
+       }
+
+  
+       
+    }
+    
+    int top() {
+        
+        return m_stk.back();
+        
+    }
+    
+    int getMin() {
+        
+        return m_currmin;
+        
+    }
+};
