@@ -1,0 +1,55 @@
+/*
+Implement a thread-safe bounded blocking queue that has the following methods:
+
+    BoundedBlockingQueue(int capacity) The constructor initializes the queue with a maximum capacity.
+    void enqueue(int element) Adds an element to the front of the queue. If the queue is full, the calling thread is blocked until the queue is no longer full.
+    int dequeue() Returns the element at the rear of the queue and removes it. If the queue is empty, the calling thread is blocked until the queue is no longer empty.
+    int size() Returns the number of elements currently in the queue.
+
+*/
+#include<iostream>
+#include<thread>
+#include<mutex>
+#include<condition_variable>
+
+
+class BoundedBlockingQueue {
+private:
+    mutex m_queue_mutex;
+    condition_variable m_queue_empty; // wait when queue is empty
+    condition_variable m_queue_full;  // wait when queue is full
+    deque<int> m_queue;
+    int m_capacity;
+    
+public:
+    BoundedBlockingQueue(int capacity) {
+        m_capacity = capacity;
+    }
+    
+    void enqueue(int element) {
+        //acquire the lock
+        unique_lock<mutex> lk(m_queue_mutex);
+        //wait for queue to to have empty slots
+        m_queue_full.wait(lk, [this] {return m_queue.size() < m_capacity;});
+        m_queue.push_front(element);
+        m_queue_empty.notify_one();
+    }
+    
+    int dequeue() {
+        
+        int ret;
+        unique_lock<mutex> lk(m_queue_mutex);
+        // Grab the lock with queue size > 0
+        m_queue_empty.wait(lk, [this] {return m_queue.size() > 0;});
+        ret = m_queue.back();
+        m_queue.pop_back();
+        m_queue_full.notify_one();
+        return ret;
+    }
+    
+    int size() {
+        // returns size of queue
+        unique_lock<mutex> lk(m_queue_mutex);
+        return m_queue.size();
+    }
+};
