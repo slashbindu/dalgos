@@ -47,7 +47,7 @@ class semaphore {
 };
 
 
-void do_work(class semaphore  *mysem ){
+void do_work(class semaphore  *mysem, int ind ){
     
     thread::id this_id = this_thread::get_id();
     
@@ -55,27 +55,26 @@ void do_work(class semaphore  *mysem ){
     mysem->sem_wait();
     
     auto start = std::chrono::system_clock::now();
-    cout << "I am  IN #: " << this_id << endl;
+    cout << ind << " IN ID #: " << this_id << endl;
     
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = end - start;
        
-    cout << this_id << "#:  Done Elapsed duration:" << diff.count() << endl;
+    cout << ind << "#:  Done Elapsed duration:" << diff.count() << endl;
  
     mysem->sem_post();
   }
 
 
-int  main(void) {
-    //create a bianry semaphore
-    semaphore  mysem(1); 
+int main() {
 
-    thread t1(do_work, &mysem);
-    thread t2(do_work, &mysem);
-   
-    t1.join();
-    t2.join();
-    
-    return 0;
- 
-}
+	semaphore  mysem(1);
+
+	std::vector<std::thread> v;
+	for (int n = 0; n < 4; ++n) {
+	 v.emplace_back(do_work, &mysem, n+1 );
+	}
+	for (auto& t : v) {
+	 t.join();
+	}
+ }
