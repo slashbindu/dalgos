@@ -1,0 +1,58 @@
+class BoundedBlockingQueue {
+    mutex m_rd; //read mutex
+    mutex m_wr; //write mutex
+    int m_capacity;
+    int ri; //read index;
+    int wi; //write index
+    int *arr;
+    condition_variable cv_rd;
+    condition_variable cv_wr;
+    inline bool isFull() {
+        return ((wi+1)%m_capacity) == (ri%m_capacity);
+    }
+    inline bool isEmpty() {
+        return wi == ri;
+    }
+    
+    public: 
+    BoundedBlockingQueue(int capacity) {
+        m_capacity = capacity+1;
+        ri = 0;
+        wi = 0;
+        arr = new int[m_capacity];
+    }
+    ~BoundedBlockingQueue() 
+    {
+        delete [] arr;
+    }
+
+    void enqueue(int element) {    
+        {
+            unique_lock<mutex> write_lk(m_wr);
+            cv_wr.wait(write_lk, [this]{return !this->isFull();});
+            arr[wi%m_capacity] = element;
+            wi++;
+            wi %= m_capacity;
+        }// released write_lk when scope is end.
+        cv_rd.notify_one();
+    }
+    
+    int dequeue() {
+        int x = 0;
+        {
+            unique_lock<mutex> read_lk(m_rd);
+            cv_rd.wait(read_lk, [this]{return !this->isEmpty();});
+            x = arr[ri%m_capacity];
+            ri++;
+            ri %= m_capacity;
+        }// released read_lk when scope is end.
+        cv_wr.notify_one();
+        return x;
+    }
+    /* size() slow performance API: should not be called by reader or writer threads. */
+    int size() {
+        unique_lock<mutex> lk_wr(m_wr);
+        unique_lock<mutex> lk_rd(m_rd);
+        return (wi - ri + m_capacity)%m_capacity;
+    }
+};
