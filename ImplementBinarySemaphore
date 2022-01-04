@@ -4,7 +4,6 @@
 #include<thread>
 #include<mutex>
 #include<condition_variable>
-
 using namespace std;
 
 class semaphore {
@@ -13,15 +12,12 @@ class semaphore {
    int m_cnt;
    mutex m_cnt_mtx;
    condition_variable cv_enter;
-   
+  
    public:
-
     semaphore(int max) {
         m_maxcnt = max;
 	m_cnt = m_maxcnt;
    }
-
-
     void sem_wait(){
     //decrement the semaphore value by one 
    // If the value of a semaphore is currently zero, then a sem_wait  will block until the value becomes greater than zero. 
@@ -41,7 +37,7 @@ class semaphore {
           m_cnt ++;
       }
       cv_enter.notify_one();
-       
+  
    }
 
 };
@@ -70,11 +66,12 @@ int main() {
 
 	semaphore  mysem(1);
 
-	std::vector<std::thread> v;
-	for (int n = 0; n < 4; ++n) {
-	 v.emplace_back(do_work, &mysem, n+1 );
+	std::vector<std::thread> vthreads;
+	for (int n=0; n < 4; ++n) {
+	 	//vthreads.emplace_back(do_work, &mysem, n+1 );
+	 	vthreads.push_back(std::thread(do_work, &mysem, n+1));
 	}
-	for (auto& t : v) {
-	 t.join();
+	for (auto& thr : v) {
+	 thr.join();
 	}
  }
