@@ -18,20 +18,24 @@ class semaphore {
 
     semaphore(int max) {
         m_maxcnt = max;
-	    m_cnt = m_maxcnt;
+	m_cnt = m_maxcnt;
    }
 
 
-    void wait(){
+    void sem_wait(){
+    //decrement the semaphore value by one 
+   // If the value of a semaphore is currently zero, then a sem_wait  will block until the value becomes greater than zero. 
+    
       unique_lock<mutex> lk(m_cnt_mtx);
-     	cv_enter.wait(lk, [this] () { return( m_cnt != 0);} );
+     	cv_enter.wait(lk, [this] () { return( m_cnt > 0);} );
     
      	if(m_cnt) {
     		m_cnt--;	
      	}
    }
 
-   void post() {
+   void sem_post() {
+   //Increment the semaphore value by one
       unique_lock<mutex> lk(m_cnt_mtx);
       if(m_cnt < m_maxcnt){
           m_cnt ++;
@@ -48,7 +52,7 @@ void do_work(class semaphore  *mysem ){
     thread::id this_id = this_thread::get_id();
     
     //can i enter ?
-    mysem->wait();
+    mysem->sem_wait();
     
     auto start = std::chrono::system_clock::now();
     cout << "I am  IN #: " << this_id << endl;
@@ -58,7 +62,7 @@ void do_work(class semaphore  *mysem ){
        
     cout << this_id << "#:  Done Elapsed duration:" << diff.count() << endl;
  
-    mysem->post();
+    mysem->sem_post();
   }
 
 
