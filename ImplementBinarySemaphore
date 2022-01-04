@@ -1,0 +1,77 @@
+
+
+#include<iostream>
+#include<thread>
+#include<mutex>
+#include<condition_variable>
+
+using namespace std;
+
+class semaphore {
+
+   int m_maxcnt; 
+   int m_cnt;
+   mutex m_cnt_mtx;
+   condition_variable cv_enter;
+   
+   public:
+
+    semaphore(int max) {
+        m_maxcnt = max;
+	    m_cnt = m_maxcnt;
+   }
+
+
+    void wait(){
+      unique_lock<mutex> lk(m_cnt_mtx);
+     	cv_enter.wait(lk, [this] () { return( m_cnt != 0);} );
+    
+     	if(m_cnt) {
+    		m_cnt--;	
+     	}
+   }
+
+   void post() {
+      unique_lock<mutex> lk(m_cnt_mtx);
+      if(m_cnt < m_maxcnt){
+          m_cnt ++;
+      }
+      cv_enter.notify_one();
+       
+   }
+
+};
+
+
+void do_work(class semaphore  *mysem ){
+    
+    thread::id this_id = this_thread::get_id();
+    
+    //can i enter ?
+    mysem->wait();
+    
+    auto start = std::chrono::system_clock::now();
+    cout << "I am  IN #: " << this_id << endl;
+    
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> diff = end - start;
+       
+    cout << this_id << "#:  Done Elapsed duration:" << diff.count() << endl;
+ 
+    mysem->post();
+  }
+
+
+int  main(void) {
+    //create a bianry semaphore
+    semaphore  mysem(1); 
+
+    thread t1(do_work, &mysem);
+    thread t2(do_work, &mysem);
+   
+    t1.join();
+    t2.join();
+    
+    return 0;
+ 
+}
