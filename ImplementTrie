@@ -1,10 +1,8 @@
 #include <iostream>
 
 using namespace std;
-
 class Trienode {
-    
-    public:
+   public:
     Trienode *children[26];
     bool end_key;
     char letter;
@@ -18,21 +16,14 @@ class Trienode {
         end_key = false;
         letter = '\0';
     }       
-    
-        
-    
-    
-    
 };
-
 
 class  Trie{
     
-     Trienode m_root;
-
+    Trienode m_root;
     public:
     void Insert (string str) {
-        
+  
         Trienode *current = &m_root;
         for (size_t i = 0; i < str.size(); i++) {
             
@@ -45,8 +36,7 @@ class  Trie{
         }
         current->end_key = true;
     }
-    
-    
+   
     Trienode* Search (string str) {
         
         Trienode *current = &m_root;
