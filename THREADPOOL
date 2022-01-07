@@ -9,18 +9,14 @@
 using namespace std;
 
 class threadpool {
-    
     private:
     int max_threads;
     int max_tasks;
-   
     vector<thread>  m_threads;
-   
     deque<int>  m_queu_task; 
     mutex m_mtxqueue;
     condition_variable m_cv_qready;
     condition_variable m_cv_empty;
-   
     
     public:
        threadpool() {
@@ -39,26 +35,23 @@ class threadpool {
             }));
         }
      }
-       void enqueu_task(int n){
+     void enqueu_task(int n){
         
         unique_lock<mutex> lk(m_mtxqueue);
         m_cv_empty.wait(lk, [this] (){ return(m_queu_task.size() != max_tasks);});
-        
         m_queu_task.push_back(n);
         m_cv_qready.notify_one();
     }
     
     int dequeu_task(){
         
-         unique_lock<mutex> lk(m_mtxqueue);
-         m_cv_qready.wait(lk, [this] (){ return(m_queu_task.size() != 0); });
-         
+        unique_lock<mutex> lk(m_mtxqueue);
+        m_cv_qready.wait(lk, [this] (){ return(m_queu_task.size() != 0); });
         int ret = m_queu_task.front();
-         m_queu_task.pop_front();
-         
+        m_queu_task.pop_front();
+    
          if(! m_queu_task.size())
             m_cv_empty.notify_one();
-            
          return ret;
     }
      
@@ -68,7 +61,6 @@ class threadpool {
             t.join();
         }
     }
-    
 };
 
 
