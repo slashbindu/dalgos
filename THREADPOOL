@@ -28,6 +28,7 @@ class threadpool {
                  
                         int n = dequeu_task();
                         if(n == 0) {
+                            enqueu_task(0);
                             break;
                         }
                         cout << endl << "task#  " << n << endl;
