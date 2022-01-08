@@ -1,0 +1,87 @@
+#include <iostream>
+#include<mutex>
+#include<condition_variable>
+#include<thread>
+#include<vector>
+
+using namespace std;
+
+
+//write-preferring RW lock
+
+class rwlock 
+    
+  private:
+  
+  mutex m_rwmtx; 
+  
+  int m_readrcnt;
+  condition_variable cv_rd_done;
+  
+  bool m_wractive;
+  int  m_wrwaiting;
+  condition_variable cv_wrdone;
+  
+   rwlock(){
+      m_readrcnt = m_wrwaiting = 0;
+      m_wractive = false;
+      
+      
+  }
+  
+  void read_lock(){
+      
+      //wait:  _writers_waiting > 0 or writer_active 
+      auto can_read = [this]() {
+          return(!m_wractive && !m_wrwaiting);
+      };
+      unique_lock<mutex> wlk(m_rwmtx);
+      cv_wrdone.wait(wlk, can_read);
+      m_readrcnt++;
+      
+  }
+  
+  void read_unlock() {
+      
+     unique_lock<mutex> wlk(m_rwmtx);
+     if(m_readrcnt) {
+         m_readrcnt--;
+     }
+     if (!m_readrcnt)
+        cv_rd_done.notify_all();
+
+  }
+      
+  void write_lock() {
+    
+    //wait:  num_readers_active > 0 or writer_active is true: 
+    
+    auto can_write = [this](){
+        return ((!m_wractive) && (!m_readrcnt));
+    };
+    
+    unique_lock<mutex> wlk(m_rwmtx);
+    m_wrwaiting++;
+    cv_wrdone.wait(wlk, can_write);
+    m_wractive = true;
+    m_wrwaiting--;
+    
+   }
+   
+   void write_unlock() {
+       
+       unique_lock<mutex> wlk(m_rwmtx);
+       m_wractive = false;
+       cv_wrdone.notify_all();
+      
+    }
+ };
+
+int main()
+{
+   cout << "write-preferring RW lock" << endl; 
+   //create a threadpool and enqueue read/write tasks
+    //todo only one rwlock instance per pool shared by all workers
+   
+   return 0;
+}
