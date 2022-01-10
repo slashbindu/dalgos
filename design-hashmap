@@ -74,6 +74,7 @@ public:
         node* fndnode = NULL;
         fndnode = m_data[dind];
         if(fndnode) {
+            // just update the value ?
             remove(key);    
         }
         
