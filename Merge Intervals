@@ -1,0 +1,32 @@
+/*Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, 
+and return an array of the non-overlapping intervals that cover all the intervals in the input.*/
+
+
+using namespace std;
+class Solution {
+    
+    
+    vector<vector<int>> m_intervals;
+    
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        
+        m_intervals = intervals;
+        vector<vector<int>> result;
+        sort(m_intervals.begin(), m_intervals.end());
+        
+        int size = m_intervals.size();
+        for(auto interval : m_intervals) {
+           
+            //check next starts  befor first ends 
+            if ( result.empty() || (result.back()[1] < interval[0] ) ) {
+                 result.push_back(interval);
+                                      
+            } else {
+                result.back()[1] = max(result.back()[1], interval[1] );
+             }
+            
+        }
+        return result;
+    }
+};
