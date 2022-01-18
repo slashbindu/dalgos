@@ -27,7 +27,7 @@ class  Trie{
         Trienode *current = &m_root;
         for (size_t i = 0; i < str.size(); i++) {
             
-            if(current->children[str.at(i)-'a']) {
+            if(!current->children[str.at(i)-'a']) {
                 
                current->children[str.at(i)-'a'] = new Trienode;
                current->children[str.at(i)-'a']->letter = str[i];
