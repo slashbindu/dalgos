@@ -1,0 +1,23 @@
+/*
+Given two numbers, hour and minutes, return the smaller angle (in degrees) formed between the hour and the minute hand.
+*/
+
+#define one_hour_angle 30 // 360/12
+#define minutes_angle  6 //  360/60
+#define num_hrs 12
+ 
+class Solution {
+public:
+    double angleClock(int hour, int minutes) {
+        
+         
+        double hr_angle = (hour % 12 + minutes/60.0) * one_hour_angle;
+        double min_angle = (minutes* minutes_angle);
+        
+        double diffangle = abs(hr_angle - min_angle);
+        
+        double angle =  min(diffangle, 360-diffangle);
+        return angle;
+        
+    }
+};
