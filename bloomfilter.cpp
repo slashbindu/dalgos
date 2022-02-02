@@ -1,7 +1,8 @@
 /* Implement a probablistic datastructure to check if an key existes in massica scale  datastore 
 A simple and lightweight implementation of a Bloom filter.: TODO
    
-   Hashing algorithm used	MD5/murmur
+   Hashing algorithm used	/murmur/jenkins/nfv NO ms5!
+   https://en.wikipedia.org/wiki/Jenkins_hash_function
    https://github.com/PeterScott/murmur3
    Expected rate of false positives  ?
    CHECK https://findingprotopia.org/posts/how-to-write-a-bloom-filter-cpp/
