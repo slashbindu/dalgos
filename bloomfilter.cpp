@@ -4,6 +4,7 @@ A simple and lightweight implementation of a Bloom filter.: TODO
    Hashing algorithm used	MD5/murmur
    https://github.com/PeterScott/murmur3
    Expected rate of false positives  ?
+   CHECK https://findingprotopia.org/posts/how-to-write-a-bloom-filter-cpp/
 */
 #include<murmur3.h>
 
