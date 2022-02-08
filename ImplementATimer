@@ -3,8 +3,26 @@
 #include <chrono>
 
 class Timer {
+    mutex mtx_active;
     bool active = false;
 
+IsActive(){
+    bool ret;
+    {
+        unique_lock<mutex> lk(mtx_active);
+        ret = this->active; = false;
+    } 
+
+}
+
+void SetActive(bool state){
+    bool ret;
+    {
+        unique_lock<mutex> lk(mtx_active);
+        ret = this->active; = state;
+    } 
+
+}
 public:
     template<typename Function>
     void setTimeout(Function function, int delay);
@@ -15,11 +33,14 @@ public:
 
 template<typename Function>
 void Timer::setTimeout(Function function, int delay) {
-    this->active = false;
+    ifIsActive
     std::thread t([=,this]() {
-        if(this->active) return;
+    
+        if(IsActive()) return;
+        //if(this->active) return;
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-        if(this->active) return;
+        if(IsActive()) return;
+        //if(this->active) return;
         function();
     });
     t.detach();
@@ -30,26 +51,27 @@ void Timer::setInterval(Function function, int interval) {
     ///////////////////////////////////
     ///// COMPLETE THE CODE HERE  /////
     ///////////////////////////////////
-    std::thread th_inteval([=, this](){
+    std::thread th_interval([=, this](){
         while(1) {
         
-            if (this->active)
+            if(!IsActive())
                 break;
              std::this_thread::sleep_for(std::chrono::milliseconds(interval));
-              if (this->active)
+              if(!IsActive())
                 break;
              function();
         }
         return; //interval thread exits if timer is canceled
         
     });
-    th_inteval.detach();
+    th_interval.detach();
    
     
 }
 
 void Timer::stop() {
-    this->active = true;
+
+    SetActive(false);
 }
 
 int main() {
