@@ -1,0 +1,68 @@
+#include <iostream>
+#include <thread>
+#include <chrono>
+
+class Timer {
+    bool active = false;
+
+public:
+    template<typename Function>
+    void setTimeout(Function function, int delay);
+    template<typename Function>
+    void setInterval(Function function, int interval);
+    void stop();
+};
+
+template<typename Function>
+void Timer::setTimeout(Function function, int delay) {
+    this->active = false;
+    std::thread t([=,this]() {
+        if(this->active) return;
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        if(this->active) return;
+        function();
+    });
+    t.detach();
+}
+
+template<typename Function>
+void Timer::setInterval(Function function, int interval) {
+    ///////////////////////////////////
+    ///// COMPLETE THE CODE HERE  /////
+    ///////////////////////////////////
+    std::thread th_inteval([=, this](){
+        while(1) {
+        
+            if (this->active)
+                break;
+             std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+              if (this->active)
+                break;
+             function();
+        }
+        return; //interval thread exits if timer is canceled
+        
+    });
+    th_inteval.detach();
+   
+    
+}
+
+void Timer::stop() {
+    this->active = true;
+}
+
+int main() {
+    Timer t = Timer();
+
+    t.setInterval([&]() {
+        std::cout << "Hey.. After each 1s..." << std::endl;
+    }, 1000); 
+
+    t.setTimeout([&]() {
+        std::cout << "Hey.. After 5.2s. But I will stop the timer!" << std::endl;
+        t.stop();
+    }, 5200); 
+
+    while(true); // Keep main thread active
+}
