@@ -32,42 +32,36 @@ public:
 };
 
 template<typename Function>
-void Timer::setTimeout(Function function, int delay) {
-    ifIsActive
-    std::thread t([=,this]() {
-    
-        if(IsActive()) return;
-        //if(this->active) return;
+void Timer::setTimeout(auto function, int delay) {
+    SetActive(true); 
+    std::thread t([=]() {
+        
+        if(!IsActive()) return;
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-        if(IsActive()) return;
-        //if(this->active) return;
+        if(!IsActive()) return;
         function();
     });
     t.detach();
 }
 
 template<typename Function>
-void Timer::setInterval(Function function, int interval) {
-    ///////////////////////////////////
-    ///// COMPLETE THE CODE HERE  /////
-    ///////////////////////////////////
-    std::thread th_interval([=, this](){
-        while(1) {
-        
-            if(!IsActive())
-                break;
-             std::this_thread::sleep_for(std::chrono::milliseconds(interval));
-              if(!IsActive())
-                break;
-             function();
+void Timer::setInterval(auto function, int interval) {
+
+    SetActive(true); 
+    std::thread t([=]() {
+        while(true) {
+            if(!IsActive()) return;
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+            if(!IsActive()) return;
+            
+            function();
         }
-        return; //interval thread exits if timer is canceled
-        
+        return // interval thread exits if timer is canceled
     });
-    th_interval.detach();
-   
-    
+    t.detach(); //runs independent of calling thread 
 }
+
 
 void Timer::stop() {
 
