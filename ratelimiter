@@ -1,0 +1,34 @@
+class TokenBucket{
+long maxbuckets;
+long refillrate;
+long currbuckets;
+long lastrefillts;
+
+
+TokenBucket(long _maxbuckets, long _refillrate){
+
+ maxbuckets = _maxbuckets;
+ refillrate = _refillrate);
+}
+
+getRefill(){
+
+ 
+ 
+ if( currtime > (lastrefillts +refil-rate) )
+   currbuckets  = maxbuckets;
+
+}
+get_token(int num)
+   
+	getRefill();
+
+	if(numtoken <= currbuckets ) {
+		currbuckets -= numtoken;
+	return true
+	} else {
+	return false
+	}
+
+	
+};
