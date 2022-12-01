@@ -39,7 +39,7 @@ class  Trie{
    
     Trienode* Search (string str) {
         
-        Trienode *current = &m_root;
+        Trienode *current = &m_rootans;
         for(size_t i=0; i< str.size(); i++) {
             
             if(current->children[str.at(i)-'a']) {
@@ -58,6 +58,17 @@ class  Trie{
     }
     
      // Print the words with the specified prefix in lexical order
-    //void PrintLexical (TrieNode* current, string prefix, string suffix) {
+    //void PrintLexical (TrieNode* current, string prefix, string suffix) {}
+    
+    string longestPrefixWord(vector<string>& words) {
+        Trie* trie = new Trie();
+        for (auto w : words) trie->insert(w);
+        string ans = "";
+        for (auto w : words) {
+            if (ans != "" && (ans.size() > w.size() || (ans.size() == w.size() && ans < w))) continue;
+            if (trie->search(w)) ans = w;
+        }
+        return ans;
+    }
 
 };
